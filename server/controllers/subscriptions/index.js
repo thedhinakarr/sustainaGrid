@@ -71,6 +71,21 @@ router.delete("/deleteSubscription/:subId",isAuthenticated,async (req,res)=>{
     }
 })
 
+router.get("/getSubInformationByToken",isAuthenticated,async (req,res)=>{
+    try {
+        console.log(`User ID--> ${req.payload.id}`);
+
+        let foundSub = await Subscription.find({subscribedBy:req.payload.id});
+        console.log(foundSub);
+
+        res.status(200).json(foundSub);
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({"message":"internal server error"});
+    }
+})
+
 router.get("/getSubInformationByUserId/:userId",isAuthenticated,async (req,res)=>{
     try {
         console.log(`User ID--> ${req.params.userId}`);

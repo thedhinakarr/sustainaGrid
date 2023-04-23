@@ -2,6 +2,8 @@ import express from "express";
 import multer from "multer";
 import { isAuthenticated } from "../../middleware/authValidation.js";
 import Approval from "../../models/Approvals.js";
+import User from "../../models/User.js";
+import Source from "../../models/Sources.js";
 
 const storage = multer.diskStorage({
 
@@ -49,6 +51,8 @@ router.post("/acceptApproval/:approvalId",isAuthenticated,async (req,res)=>{
         }
 
         let foundApproval = await Approval.findOne({_id:req.params.approvalId});
+
+        
 
         if(!foundApproval){
             res.status(404).json({"message":"Proposal not found"});

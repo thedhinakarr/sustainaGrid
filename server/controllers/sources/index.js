@@ -1,10 +1,13 @@
 import express from "express";
 import multer from "multer";
+import Stripe from "stripe";
 
 import User from "../../models/User.js";
 import Source from "../../models/Sources.js"
 import { isAuthenticated } from "../../middleware/authValidation.js";
 import fs from "fs/promises";
+
+const stripe = Stripe(`sk_test_51MyvmbSGiNjG3rZcOfyOBofLOfZ2oyBYOv4hmuaJ0xmXZyFub3XLThUqtUDzdeECB1V95EG2tLtrAhhtOyToT05V0045wTunku`);
 
 const router = express.Router();
 
@@ -62,7 +65,6 @@ router.post("/addSource",isAuthenticated,async (req,res)=>{
     }
 })
 
-
 router.post("/editSourceProfile/:sourcename",isAuthenticated,uploadSource.single('picture'),async (req,res)=>{
     try{
         console.log(req.file);
@@ -91,11 +93,20 @@ router.post("/editSourceProfile/:sourcename",isAuthenticated,uploadSource.single
 
 })
 
-
 router.get("/getAllSources",isAuthenticated,async (req,res)=>{
     try{
         console.log(req.payload);
         let x = await Source.find();
+        res.status(200).json(x);
+    }catch(err){
+        console.log(err);
+        res.status(500).json({"message":"internal server error"});
+    }
+})
+
+router.get("/getSourceById/:id",async (req,res)=>{
+    try{
+        let x = await Source.find({_id:req.params.id});
         res.status(200).json(x);
     }catch(err){
         console.log(err);
@@ -143,7 +154,15 @@ router.post("/addStripePriceId/:sourcename",isAuthenticated,async (req,res)=>{
     }
 })
 
+router.post("/buySource/:sourceId",isAuthenticated, async (req,res)=>{
+    try {
 
+        
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({"message":"Internal server error"});  
+    }
+})
 
 
 export default router;

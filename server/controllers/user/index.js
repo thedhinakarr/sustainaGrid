@@ -217,5 +217,18 @@ router.get("/getAllLocationStrings",isAuthenticated,async (req, res) => {
     }
 });
 
+router.get("/getLatLongById/:id",isAuthenticated,async (req,res)=>{
+    try {
+        console.log(req.params.id);
+        
+        let u = await User.find({_id:req.params._id});
+
+        res.status(200).json({"lat":u.locationLat,"long":u.locationLong});
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({"message":"Internal server error"});
+    }
+})
 
 export default router;
