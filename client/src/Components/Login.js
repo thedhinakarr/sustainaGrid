@@ -1,38 +1,38 @@
 import React from 'react'
 import { useState } from 'react'
 import axios from 'axios'
-import { useNavigate,link } from 'react-router-dom'
+import { useNavigate, link } from 'react-router-dom'
 
 export default function Login() {
 
-    //let navigate = useNavigate();
-    const [userData,setUserData] = useState({
-        email:"",
-        password:"",
+    let navigate = useNavigate();
+    const [userData, setUserData] = useState({
+        email: "",
+        password: "",
     })
 
-    function OnChangeHandler(e){
+    function OnChangeHandler(e) {
         setUserData({
             ...userData,
-            [e.target.name]:e.target.value
+            [e.target.name]: e.target.value
         })
         console.log(userData)
     }
 
-    async  function OnSubmitHandler(e){
+    async function OnSubmitHandler(e) {
         try {
             e.preventDefault();
-           let { data } = await axios.post("/api/user/login", userData);
-          localStorage.setItem("token", JSON.stringify(data.token));
-          console.log(localStorage.getItem("token"))
-          alert("LOGIN Successfull")
-        //  navigate("/feed");
+            let { data } = await axios.post("/api/user/login", userData);
+            localStorage.setItem("token", JSON.stringify(data.token));
+            console.log(localStorage.getItem("token"))
+            alert("LOGIN Successfull")
+            navigate("/consumerDashBoard");
 
         } catch (error) {
             alert(error.response.data.error);
             console.log(error)
         }
-     }
+    }
 
     return (
         <div>

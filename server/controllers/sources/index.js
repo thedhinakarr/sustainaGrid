@@ -93,11 +93,11 @@ router.post("/editSourceProfile/:sourcename",isAuthenticated,uploadSource.single
 
 })
 
-router.get("/getAllSources",isAuthenticated,async (req,res)=>{
+router.get("/getAllSources",async (req,res)=>{
     try{
         console.log(req.payload);
         let x = await Source.find();
-        res.status(200).json(x);
+        res.status(200).send(x);
     }catch(err){
         console.log(err);
         res.status(500).json({"message":"internal server error"});
@@ -106,6 +106,7 @@ router.get("/getAllSources",isAuthenticated,async (req,res)=>{
 
 router.get("/getSourceById/:id",async (req,res)=>{
     try{
+        console.log(req.params.id)
         let x = await Source.find({_id:req.params.id});
         res.status(200).json(x);
     }catch(err){
