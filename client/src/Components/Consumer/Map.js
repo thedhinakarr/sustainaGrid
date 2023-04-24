@@ -52,10 +52,10 @@ export default function Home() {
   });
 
   if (!isLoaded) return <div>Loading...</div>;
-  return <h1 className="text-white"><Map userLocation={uCoordata} subSourceLocations={sourcedata} /></h1>;
+  return <h1 className="text-white"><Map userLocation={uCoordata} subSourceLocations={sourcedata} sourceId={params.id} /></h1>;
 }
 
-function Map({ subSourceLocations, userLocation }) {
+function Map({ subSourceLocations, userLocation, sourceId }) {
 
   const [directions, setDirections] = useState(null);
 
@@ -75,7 +75,7 @@ function Map({ subSourceLocations, userLocation }) {
 
   function onGoBack(e) {
     e.preventDefault();
-    navigate("/consumerDashBoard");
+    navigate(`/sourceProfile/${sourceId}`);
   }
 
   const options = useMemo(() => ({ mapId: "7255e263feaf4c95" }), []);
