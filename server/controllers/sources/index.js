@@ -104,7 +104,7 @@ router.get("/getAllSources",async (req,res)=>{
     }
 })
 
-router.get("/getSourceById/:id",async (req,res)=>{
+router.get("/getSourceById/:id",isAuthenticated, async (req,res)=>{
     try{
         console.log(req.params.id)
         let x = await Source.find({_id:req.params.id});

@@ -98,8 +98,8 @@ export default function ConsumerDash() {
         <button onClick={logoutHandle} className="font-semibold hover:bg-susZGreen hover:text-susBlack mb-2  text-xl p-3  rounded-lg items-center ">LOGOUT</button>
     </div>
 
-    <div className="flex flex-nowrap flex-col w-3/5 py-9 px-5 border border-susZGreen ">
-    <div className="mb-2 font-semibold overscroll-auto rounded-lg text-lg items-center p-3 "> <span className="text-susZGreen text-6xl">Subscriptions</span></div>
+    <div className="flex flex-nowrap overflow-auto flex-col w-3/5 py-9 px-5 border border-susZGreen ">
+    <div className="mb-2 font-semibold  rounded-lg text-lg items-center p-3 "> <span className="text-susZGreen text-6xl">Subscriptions</span></div>
      {subscriptions}
      
     </div>

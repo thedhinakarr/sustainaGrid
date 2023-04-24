@@ -7,6 +7,8 @@ import SourceProfile from "./Components/Consumer/SourceProfile";
 import { Routes, Route } from "react-router-dom";
 import PrivateRoute from "./Components/PrivateRoute";
 import AICHAT from "./Components/Consumer/AICHAT";
+import CheckoutPage from "./Components/Consumer/CheckoutPage";
+import Home from "./Components/Consumer/Map";
 
 function App() {
   return (
@@ -19,9 +21,10 @@ function App() {
       <Route path="/consumerDashBoard" element={<ConsumerDash/>}/>
       <Route path="/groot" element={<AICHAT/>}/>
       <Route path="/consumerMarket" element={<ConsumerMarket/>}/>
+      <Route path="/locationAnalyser/:id" element={<Home/>}/>
       <Route path="/sourceProfile/:id" element={<SourceProfile/>}/>
-      {/* <Route path="/locationAnalyser" element={<LocationAnalyzer/>}/> */}
-
+      <Route path="/checkoutPage/:id" element={<CheckoutPage/>}/>
+     
       </Route>
       </Routes> 
 

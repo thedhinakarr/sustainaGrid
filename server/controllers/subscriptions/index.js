@@ -27,12 +27,11 @@ router.post("/addSubscription/:sourceId",isAuthenticated,async (req,res)=>{
               },
             ],
             mode: 'subscription',
-            success_url: `http://localhost:3000`,
+            success_url: `http://localhost:3000/consumerDashBoard`,
             cancel_url: `http://localhost:3000/rejected`,
         });
           
         console.log(session.url)
-
 
         let newSub = new Subscription({
             "subscribedTo":foundSource._id,

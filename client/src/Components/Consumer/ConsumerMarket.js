@@ -31,8 +31,7 @@ export default function ConsumerMarket() {
             }
         }
         getAudio();
-    }
-        , [])
+    } , [])
 
 
     audio.forEach((ele) => {

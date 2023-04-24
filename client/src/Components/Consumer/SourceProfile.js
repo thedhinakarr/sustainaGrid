@@ -7,9 +7,9 @@ import axios from 'axios';
 export default function SourceProfile() {
   const [udata, setuData] = useState({});
   const [sdata, setsData] = useState({});
-   let params = useParams();
-   let navigate = useNavigate();
-  let libs = [];
+
+  let params = useParams();
+  let navigate = useNavigate();
 
   useEffect(() => {
     let getData = async () => {
@@ -17,13 +17,12 @@ export default function SourceProfile() {
 
             let ls = localStorage.getItem("token");
             ls = JSON.parse(ls)
-
             const config = {
                 headers: {
                     "auth-token": ls
                 }
             };
-
+            console.log(config)
             console.log(params.id)
 
             let { data } = await axios.get(`/api/sources/getSourceById/${params.id}`, config);
@@ -39,9 +38,9 @@ export default function SourceProfile() {
 }, [sdata])
 
 
-function subClick(e){
+async function SubClick(e){
   e.preventDefault();
-  alert("subscribed! ");
+  navigate(`/checkoutPage/${sdata._id}`)
 }
 
 function onGoBack(e){
@@ -51,9 +50,8 @@ function onGoBack(e){
 
 function locationAnalysisClick(e){
   e.preventDefault();
-  alert(" taking to location ")
+  navigate(`/locationAnalyser/${sdata._id}`);
 }
-
 
   return (
     <div>
@@ -68,11 +66,13 @@ function locationAnalysisClick(e){
         <div className="lex flex-nowrap flex-col h-screen w-3/5 py-9 px-5 border-susZGreen ">
           <button onClick={onGoBack} className="font-semibold  hover:bg-susZGreen w-40 h-10 py-1 mr-3 mb-10 text-center border">Go Back</button>
           <button onClick={locationAnalysisClick} className="font-semibold  hover:bg-susZGreen w-40 h-10 py-1 mr-3 mb-10 text-center border">Location Analysis </button>
-          <button onClick={subClick} className="font-semibold  hover:bg-susZGreen w-40 h-10 py-1 mr-3 text-center border">Subscribe</button>
+          <button onClick={SubClick} className="font-semibold  hover:bg-susZGreen w-40 h-10 py-1 mr-3 text-center border">Subscribe</button>
           <div className="font-semibold mb-2  text-lg p-3  rounded-lg items-center  border-susZGreen border">Owned by: <span className="text-susZGreen">{sdata.ownedBy}</span></div>
           <div className="font-semibold mb-2  text-lg p-3  rounded-lg items-center  border-susZGreen border">Energy Generated: <span className="text-susZGreen">{sdata.energyGenerated}</span></div>
           <div className="font-semibold mb-2  text-lg p-3  rounded-lg items-center  border-susZGreen border">Description: <span className="text-susZGreen">{sdata.description}</span></div>
           <div className="font-semibold mb-2  text-lg p-3  rounded-lg items-center  border-susZGreen border">Max Capacity: <span className="text-susZGreen">{sdata.maxCapacity}</span></div>
+          <div className="font-semibold mb-2  text-lg p-3  rounded-lg items-center  border-susZGreen border">Location: <span className="text-susZGreen">{sdata.locationString}</span></div>
+          <div className="font-semibold mb-2  text-lg p-3  rounded-lg items-center  border-susZGreen border">Subscription price: <span className="text-susZGreen">Rs.{sdata.subscriptionPrice}</span></div>
 
           {/* <div className="flex w-full p-8 overflow-auto border-b border-rose-700"> */}
           {/* {libs} */}
