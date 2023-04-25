@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function consumerMap() {
+export default function GovtDashboard() {
   return (
     <div>
       

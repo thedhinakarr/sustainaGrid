@@ -15,7 +15,7 @@ async function x(pid,price){
         currency: 'inr',
         recurring: {interval: 'month'},
         product: productx.id,
-      });
+    });
 }
 
 x("prod_NlBvBpoXsA9NVv",250000)

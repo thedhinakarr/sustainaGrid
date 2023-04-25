@@ -73,7 +73,7 @@ export default function ConsumerDash() {
 
     function producerHandle(e){
         e.preventDefault();
-        alert("producer clicked");
+        navigate("/producerDashBoard");
     }
 
     function logoutHandle(e){

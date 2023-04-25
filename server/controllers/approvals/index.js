@@ -1,110 +1,176 @@
 import express from "express";
 import multer from "multer";
 import { isAuthenticated } from "../../middleware/authValidation.js";
-import Approval from "../../models/Approvals.js";
+import Proposal from "../../models/Proposals.js";
 import User from "../../models/User.js";
 import Source from "../../models/Sources.js";
+
+import Stripe from "stripe";
+const stripe = Stripe(`sk_test_51MyvmbSGiNjG3rZcOfyOBofLOfZ2oyBYOv4hmuaJ0xmXZyFub3XLThUqtUDzdeECB1V95EG2tLtrAhhtOyToT05V0045wTunku`)
+
+
 
 const storage = multer.diskStorage({
 
     destination: function (req, file, cb) {
-      cb(null, "./assets/proposalFiles");
+        cb(null, "./assets/proposalFiles");
     },
-  
+
     filename: function (req, file, cb) {
-      let ext = file.mimetype.split("/")[1];
-      cb(null, file.fieldname + "-" + Date.now() + "." + "pdf");
+        let ext = file.mimetype.split("/")[1];
+        cb(null, file.fieldname + "-" + Date.now() + "." + ext);
     },
-  
+
 });
+
 
 const upload = multer({ storage: storage });
 
 let router = express.Router();
 
-router.post("/addApproval",isAuthenticated,upload.single('proposal'),async (req,res)=>{
+router.post("/addProposal", isAuthenticated, upload.fields([
+    { name: 'proposal' },
+    { name: 'picture'}
+  ]
+  ), async (req, res) => {
     try {
-        console.log(req.file);
+        console.log(req.files.proposal[0]);
+        console.log(req.files.picture[0]);
+        console.log(req.body.data);
+       let body = JSON.parse(req.body.data);
+        console.log(body);
+        let proposalfilename = req.files.proposal[0].filename;
+        let imagefilename = req.files.picture[0].filename;
 
-        let filename = req.file.filename;
-        let proposalFileUrl = `/api/approvals/file/${filename}`;
+        let proposalFileUrl = `/api/approvals/file/${proposalfilename}`;
+        let imageUrl = `/api/approvals/file/${imagefilename}`;
 
-        let newProposal = new Approval({
-            "proposalBy":req.payload.id,
-            proposalFileUrl
+        let newProposal = new Proposal({
+
+            proposalBy: req.payload.id,
+            proposalFileUrl,
+            imageUrl,
+            name:body.name,
+            proposedResourceType:body.proposedResourceType,
+            proposedEnergyType:body.proposedEnergyType,
+            proposedEnergyGenerated:body.proposedEnergyGenerated,
+            proposedSourceCost:body.proposedSourceCost,
+            proposedSubscriptionPrice:body.proposedSubscriptionPrice,
+            description:body.description,
+            locationString:body.locationString,
+            locationLat:body.locationLat,
+            locationLong:body.locationLong
         })
-
+        console.log(newProposal)
         await newProposal.save();
 
-        res.status(200).json(newProposal);
-        
+        res.status(200).json({"message":`proposal ${newProposal._id} sent to govt. Stay tuned for updates in the approvals section!`});
+
     } catch (error) {
         console.log(error);
-        res.status(500).json({"message":"Internal server error"});
+        res.status(500).json({ "message": "Internal server error" });
     }
 });
 
-router.post("/acceptApproval/:approvalId",isAuthenticated,async (req,res)=>{
+router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => {
     try {
-        if(req.payload.id != "643fbf124d159f872deee32d"){
-            res.status(401).json({"message":"Unauthorised"});
+
+        if (req.payload.id != "643fbf124d159f872deee32d") {
+            res.status(401).json({ "message": "Unauthorised" });
         }
 
-        let foundApproval = await Approval.findOne({_id:req.params.approvalId});
+        let foundProposal = await Proposal.findOne({ _id: req.params.proposalId });
 
+        if (!foundProposal) {
+            res.status(404).json({ "message": "Proposal not found" });
+        }
         
+        let {name, proposedResourceType,proposedEnergyType,proposedEnergyGenerated,proposedSourceCost,proposedSubscriptionPrice,description,locationString,locationLat,locationLong,imageUrl} = foundProposal;
 
-        if(!foundApproval){
-            res.status(404).json({"message":"Proposal not found"});
-        }
+        const product = await stripe.products.create({
+            name: `${foundProposal.name}-source`,
+        });
 
-        await Approval.updateOne({_id:req.params.approvalId},{ $set: { isApproved: true, state:"Approved" }});
+        const pricex = await stripe.prices.create({
+            unit_amount: `${foundProposal.proposedSourceCost}`,
+            currency: 'inr',
+            product: product.id,
+        });
 
-        res.status(200).json({"message":"Proposal Approved, you can continue to buy."});
+        let source = new Source({
+            name,
+            resourceType:proposedResourceType,
+            energyType:proposedEnergyType,
+            energyGenerated:proposedEnergyGenerated,
+            sourceCost:proposedSourceCost,
+            subscriptionPrice:proposedSubscriptionPrice,
+            description,
+            locationString,
+            locationLat,
+            locationLong,
+            imageUrl,
+            maxCapacity:30,
+            priceId:pricex.id
+        });
+
+        await source.save();
+        await Proposal.updateOne({ _id: req.params.proposalId }, { $set: { isApproved: true, state: "Approved" } });
+
+        res.status(200).json({ "message": "Proposal Approved, Check the Producer market" });
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({"message":"Internal server error"});
+        res.status(500).json({ "message": "Internal server error" });
     }
 })
 
-router.post("/rejectApproval/:approvalId",isAuthenticated,async (req,res)=>{
+router.post("/rejectApproval/:approvalId", isAuthenticated, async (req, res) => {
     try {
-        if(req.payload.id != "643fbf124d159f872deee32d"){
-            res.status(401).json({"message":"Unauthorised"});
+        if (req.payload.id != "643fbf124d159f872deee32d") {
+            res.status(401).json({ "message": "Unauthorised" });
         }
 
-        let foundApproval = await Approval.findOne({_id:req.params.approvalId});
+        let foundApproval = await Proposal.findOne({ _id: req.params.approvalId });
 
 
-        if(!foundApproval){
-            res.status(404).json({"message":"Proposal not found"});
+        if (!foundApproval) {
+            res.status(404).json({ "message": "Proposal not found" });
         }
 
-        await Approval.updateOne({_id:req.params.approvalId},{ $set: { isApproved: false, state:"Rejected" }});
-        res.status(200).json({"message":"Proposal Rejected, the proposal does not comply to government norms"});   
-             
+        await Approval.updateOne({ _id: req.params.approvalId }, { $set: { isApproved: false, state: "Rejected" } });
+        res.status(200).json({ "message": "Proposal Rejected, the proposal does not comply to government norms" });
+
     } catch (error) {
-    console.log(error);
-    res.status(500).json({"message":"Internal server error"}); 
+        console.log(error);
+        res.status(500).json({ "message": "Internal server error" });
     }
 })
 
-router.get("/getAllApprovals",isAuthenticated,async (req,res)=>{
+router.get("/getAllApprovals", isAuthenticated, async (req, res) => {
     try {
-        if(req.payload.id != "643fbf124d159f872deee32d"){
-            res.status(401).json({"message":"Unauthorised"});
+        if (req.payload.id != "643fbf124d159f872deee32d") {
+            res.status(401).json({ "message": "Unauthorised" });
         }
 
-        let x = await Approval.find();
+        let x = await Proposal.find();
 
         res.status(200).json(x);
     } catch (error) {
         console.log(error);
-        res.status(500).json({"message":"internal server error"});
+        res.status(500).json({ "message": "internal server error" });
     }
 })
 
+router.get("/getApprovalsByToken", isAuthenticated, async (req, res) => {
+    try {
+    
+        let x = await Proposal.find({proposalBy:req.payload.id});
+        res.status(200).json(x);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ "message": "internal server error" });
+    }
+})
 
 export default router;
 

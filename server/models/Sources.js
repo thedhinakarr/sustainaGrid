@@ -82,12 +82,19 @@ let sourceSchema = new mongoose.Schema({
         required:true
     },
 
-    
     priceId:{
         type:String,
     },
 
     productId:{
+        type:String
+    },
+
+    sourcePriceId:{
+        type:String,
+    },
+
+    sourceProductId:{
         type:String
     }
     
