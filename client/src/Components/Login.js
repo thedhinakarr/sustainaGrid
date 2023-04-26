@@ -27,7 +27,6 @@ export default function Login() {
             console.log(localStorage.getItem("token"))
             alert("LOGIN Successfull")
             navigate("/consumerDashBoard");
-
         } catch (error) {
             alert(error.response.data.error);
             console.log(error)

@@ -2,6 +2,8 @@ import express from "express";
 import config from "config";
 import bcrypt from "bcrypt";
 import multer from "multer";
+import jwt from "jsonwebtoken";
+
 
 import User from "../../models/User.js";
 import { registerValidations, loginValidations, errorMiddleWare } from "../../middleware/generalValidations.js";
@@ -25,6 +27,19 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+router.post("/auth", async (req, res) => {
+    try {
+      console.log(req.body.token);
+      let letgov =  jwt.verify(req.body.token,config.get("JWT_SECRET"));
+      console.log(letgov);
+      return res.status(200).json(letgov);
+
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 router.post("/register",registerValidations(),errorMiddleWare,async (req, res) => {
     try{
@@ -193,7 +208,7 @@ router.get("/getAllLatLong",isAuthenticated,async (req, res) => {
         let x = await User.find();
 
         let y = x.map((ele)=>{
-            return {"lat":ele.locationLat,"long":ele.locationLong};
+            return {"lat":ele.locationLat,"lng":ele.locationLong};
         })
 
         res.status(200).json(y);

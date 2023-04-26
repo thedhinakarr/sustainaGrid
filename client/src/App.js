@@ -16,8 +16,12 @@ import ProducerProposal from "./Components/Producer/ProducerProposals";
 import ProducerSourceProfile from "./Components/Producer/ProducerSourceProfile";
 import ProducerCheckoutPage from "./Components/Producer/ProducerCheckoutPage";
 import ProducerLocationAnalyser from "./Components/Producer/ProducerLocationAnalyser";
-import GovtPrivateRoute from "./Components/GovtPrivateRoute";
-
+import GovtLogin from "./Components/Govt/GovtLogin";
+import GovtDash from "./Components/Govt/GovtDash";
+import GovtMap from "./Components/Govt/GovtMap";
+import ApprovalProfile from "./Components/Govt/ApprovalProfile";
+import GovtLocationAnalyzer from "./Components/Govt/GovtLocationAnalyzer";
+import AddSourcePage from "./Components/Govt/AddSourcePage";
 
 function App() {
   return (
@@ -26,6 +30,7 @@ function App() {
       <Route path="/" element={<LandingPage/>}/>
       <Route path="/register" element={<Registration/>}/>
       <Route path="/login" element={<Login/>}/>
+      <Route path="/govtLogin" element={<GovtLogin/>}/>
 
       <Route element={<PrivateRoute/>}>
 
@@ -44,12 +49,15 @@ function App() {
       <Route path="/sourceProfile/:id" element={<SourceProfile/>}/>
       <Route path="/checkoutPage/:id" element={<CheckoutPage/>}/>
 
-      </Route>
-
-      <Route element={<GovtPrivateRoute/>}>
+      <Route path="/govtDashBoard" element={<GovtDash/>}/>
+      <Route path="/approvalProfile/:id" element={<ApprovalProfile/>}/>
+      <Route path="/govtLocationAnalyzer/:id" element={<GovtLocationAnalyzer/>}/>
+      <Route path="/addSource/:id" element={<AddSourcePage/>}/>
       
-      </Route>
+      {/* <Route path="/monitorUsers" element={<GovtMap/>}/> */}
+      {/* <Route path="/monitorSources" element={}/> */}
 
+      </Route>
       </Routes> 
   );
 }

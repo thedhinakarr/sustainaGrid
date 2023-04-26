@@ -37,7 +37,10 @@ router.post("/buySource/:sourceId", isAuthenticated, async (req, res) => {
         const session = await stripe.checkout.sessions.create({
             line_items: [
                 {
-                    price: foundSource.priceId,
+                    price_data:{
+                        currency: 'inr',
+                        price: foundSource.priceId,
+                    },
                     quantity: 1,
                 },
             ],
@@ -125,11 +128,25 @@ router.post("/editSourceProfile/:sourcename", isAuthenticated, uploadSource.sing
 
 })
 
-router.get("/getAllSources", async (req, res) => {
+router.get("/getAllSources",isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload);
         let x = await Source.find();
         res.status(200).send(x);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ "message": "internal server error" });
+    }
+})
+
+router.get("/getAllSourcesLatLong",isAuthenticated, async (req, res) => {
+    try {
+        console.log(req.payload);
+        let x = await Source.find();
+        let y = x.map((ele)=>{
+            return {"lat":ele.locationLat,"lng":ele.locationLong};
+        })
+        res.status(200).send(y);
     } catch (err) {
         console.log(err);
         res.status(500).json({ "message": "internal server error" });

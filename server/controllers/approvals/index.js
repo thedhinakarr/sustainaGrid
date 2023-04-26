@@ -163,7 +163,6 @@ router.get("/getAllApprovals", isAuthenticated, async (req, res) => {
 
 router.get("/getApprovalsByToken", isAuthenticated, async (req, res) => {
     try {
-    
         let x = await Proposal.find({proposalBy:req.payload.id});
         res.status(200).json(x);
     } catch (error) {
@@ -171,6 +170,18 @@ router.get("/getApprovalsByToken", isAuthenticated, async (req, res) => {
         res.status(500).json({ "message": "internal server error" });
     }
 })
+
+
+router.get("/getApprovalById/:id", isAuthenticated, async (req, res) => {
+    try {
+        let x = await Proposal.find({_id:req.params.id});
+        res.status(200).json(x);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ "message": "internal server error" });
+    }
+})
+
 
 export default router;
 
