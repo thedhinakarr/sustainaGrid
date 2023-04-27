@@ -23,7 +23,7 @@ export default function ConsumerMarket() {
                     }
                 };
 
-                let { data } = await axios.get("/api/sources/getAllSources", config);
+                let { data } = await axios.get("/api/sources/getAllSourcesWithOwners", config);
                 setAudio(data);
                 console.log(data);
             } catch (error) {

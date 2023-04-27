@@ -21,6 +21,7 @@ export default function ProducerCheckoutPage() {
                     "auth-token": ls
                 }
             };
+            console.log(params.id);
 
             let url = await axios.post(`/api/sources/buySource/${params.id}`,{},config);
             console.log(url.data);

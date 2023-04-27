@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export default function Registration() {
-    // let navigate = useNavigate();
+    let navigate = useNavigate();
     const [latitude, setLatitude] = useState(null);
     const [longitude, setLongitude] = useState(null);
     const [userData,setUserData] = useState({
@@ -48,8 +48,7 @@ export default function Registration() {
             let { data } = await axios.post("/api/user/register", userData);
             alert(data.message)
             console.log(data.message)
-
-           //  avigate("/login");
+            navigate("/login");
         } catch (error) {
             alert(error.response.data.error);
             console.log(error)

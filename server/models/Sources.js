@@ -90,11 +90,11 @@ let sourceSchema = new mongoose.Schema({
         type:String
     },
 
-    sourcePriceId:{
+    sPriceId:{
         type:String,
     },
 
-    sourceProductId:{
+    sProductId:{
         type:String
     }
     

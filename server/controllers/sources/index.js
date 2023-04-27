@@ -27,39 +27,34 @@ const uploadSource = multer({ storage: sourceStorage });
 
 router.post("/buySource/:sourceId", isAuthenticated, async (req, res) => {
     try {
-
-        console.log(req.params.sourceId);
-        console.log(req.payload);
-
+        console.log(req.params.sourceId)
+        let foundSource = await Source.findOne({_id:req.params.sourceId});
         let foundUser = await User.findOne({_id:req.payload.id});
-        let foundSource = await Source.findOne({_id:req.params.sourceId})
 
         const session = await stripe.checkout.sessions.create({
             line_items: [
-                {
-                    price_data:{
-                        currency: 'inr',
-                        price: foundSource.priceId,
-                    },
-                    quantity: 1,
-                },
+              {
+                price: foundSource.priceId,
+                quantity: 1,
+              },
             ],
-            mode:'payment',
+            mode: 'payment',
             success_url: `http://localhost:3000/producerDashBoard`,
             cancel_url: `http://localhost:3000/rejected`,
         });
 
-        console.log(session.url);
-        await Source.updateOne({_id:foundSource._id}, { $push: { "ownedBy": foundUser._id }});
-        await User.updateOne({_id:foundUser._id}, { $push: { "ownings": foundSource._id} });
-        res.status(200).json(session.url);
+       console.log(session.url);
+
+       await Source.updateOne({_id:foundSource._id},{ $push: { "ownedBy":foundUser._id}});
+       await User.updateOne({_id:foundUser._id},{$push:{"ownings":foundSource._id}});
+
+        res.status(200).send(session.url)
 
     } catch (error) {
         console.log(error);
         res.status(500).json({ "message": "Internal server error" });
     }
 })
-
 
 router.post("/addSource", isAuthenticated, async (req, res) => {
     try {
@@ -77,6 +72,34 @@ router.post("/addSource", isAuthenticated, async (req, res) => {
             return res.status(400).json({ message: "Unauthorized" });
         }
 
+        // source.
+        const product = await stripe.products.create({
+            name: name,
+        });
+        console.log(product);
+
+        const pricex = await stripe.prices.create({
+            unit_amount: sourceCost,
+            currency: 'inr',
+            product: product.id,
+        });
+
+        console.log(pricex);
+
+        //subscription.
+        const sproduct = await stripe.products.create({
+            name: `${name}-S`,
+        });
+        console.log(sproduct);
+        const spricex = await stripe.prices.create({
+            unit_amount: subscriptionPrice,
+            currency: 'inr',
+            recurring: {interval: 'month'},
+            product: sproduct.id,
+        });
+
+        console.log(spricex);
+
         let source = new Source({
             name,
             resourceType,
@@ -88,7 +111,11 @@ router.post("/addSource", isAuthenticated, async (req, res) => {
             description,
             locationString,
             locationLat,
-            locationLong
+            locationLong,
+            productId:product.id,
+            priceId:pricex.id,
+            sProductId:sproduct.id,
+            sPriceId:spricex.id,
         })
 
         await source.save();
@@ -128,7 +155,7 @@ router.post("/editSourceProfile/:sourcename", isAuthenticated, uploadSource.sing
 
 })
 
-router.get("/getAllSources",isAuthenticated, async (req, res) => {
+router.get("/getAllSources", isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload);
         let x = await Source.find();
@@ -139,12 +166,12 @@ router.get("/getAllSources",isAuthenticated, async (req, res) => {
     }
 })
 
-router.get("/getAllSourcesLatLong",isAuthenticated, async (req, res) => {
+router.get("/getAllSourcesLatLong", isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload);
         let x = await Source.find();
-        let y = x.map((ele)=>{
-            return {"lat":ele.locationLat,"lng":ele.locationLong};
+        let y = x.map((ele) => {
+            return { "lat": ele.locationLat, "lng": ele.locationLong };
         })
         res.status(200).send(y);
     } catch (err) {
@@ -168,6 +195,17 @@ router.get("/getAllSourcesWithoutOwners", async (req, res) => {
     try {
         console.log(req.payload);
         let x = await Source.find({ ownedBy: [] });
+        res.status(200).send(x);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ "message": "internal server error" });
+    }
+})
+
+router.get("/getAllSourcesWithOwners", async (req, res) => {
+    try {
+        console.log(req.payload);
+        let x = await Source.find({ ownedBy:{$exists: true, $not: { $size: 0 }}});
         res.status(200).send(x);
     } catch (err) {
         console.log(err);
@@ -226,16 +264,5 @@ router.post("/addStripePriceId/:sourcename", isAuthenticated, async (req, res) =
         res.status(500).json({ "message": "internal server error" });
     }
 })
-
-router.post("/buySource/:sourceId", isAuthenticated, async (req, res) => {
-    try {
-
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ "message": "Internal server error" });
-    }
-})
-
 
 export default router;

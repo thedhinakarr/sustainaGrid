@@ -20,13 +20,11 @@ router.post("/addSubscription/:sourceId",isAuthenticated,async (req,res)=>{
         let foundSource = await Source.findOne({_id:req.params.sourceId})
 
         const session = await stripe.checkout.sessions.create({
-            line_items: [
-              {
-                price: foundSource.priceId,
+            line_items: [{
+                price: foundSource.sPriceId,
                 quantity: 1,
-              },
-            ],
-            mode: 'subscription',
+              }],
+              mode: 'subscription',
             success_url: `http://localhost:3000/consumerDashBoard`,
             cancel_url: `http://localhost:3000/rejected`,
         });
@@ -114,6 +112,5 @@ router.get("/getSubInformationBySourceId/:sourceId",isAuthenticated,async (req,r
         res.status(500).json({"message":"internal server error"});
     }
 })
-
 
 export default router;

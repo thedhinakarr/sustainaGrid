@@ -64,4 +64,3 @@ let userSchema = new mongoose.Schema(
 let User = mongoose.model("User",userSchema);
 
 export default User;
-

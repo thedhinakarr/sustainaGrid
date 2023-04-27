@@ -18,7 +18,6 @@ import ProducerCheckoutPage from "./Components/Producer/ProducerCheckoutPage";
 import ProducerLocationAnalyser from "./Components/Producer/ProducerLocationAnalyser";
 import GovtLogin from "./Components/Govt/GovtLogin";
 import GovtDash from "./Components/Govt/GovtDash";
-import GovtMap from "./Components/Govt/GovtMap";
 import ApprovalProfile from "./Components/Govt/ApprovalProfile";
 import GovtLocationAnalyzer from "./Components/Govt/GovtLocationAnalyzer";
 import AddSourcePage from "./Components/Govt/AddSourcePage";

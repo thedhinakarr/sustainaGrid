@@ -44,9 +44,12 @@ router.post("/auth", async (req, res) => {
 router.post("/register",registerValidations(),errorMiddleWare,async (req, res) => {
     try{
         let {name,email,password,locationString,locationLat,locationLong,twitterUrl} = req.body;
-        console.log(req.body);
-        let findEmail = await User.findOne({ email: req.body.email });
+        //Object deconstruction
 
+        console.log(req.body);
+
+        let findEmail = await User.findOne({ email: req.body.email });
+        
         if (findEmail) {
             return res.status(409).json({ error: "User already exists" });
         }
