@@ -25,7 +25,7 @@ let sourceSchema = new mongoose.Schema({
     },
 
     ownedBy:{
-        type: [{ type : mongoose.Schema.Types.ObjectId, ref: 'User' }],
+        type: { type : mongoose.Schema.Types.ObjectId, ref: 'User' },
         default:[]
     },
 

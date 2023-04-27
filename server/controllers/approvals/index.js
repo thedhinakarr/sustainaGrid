@@ -87,15 +87,33 @@ router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => 
         
         let {name, proposedResourceType,proposedEnergyType,proposedEnergyGenerated,proposedSourceCost,proposedSubscriptionPrice,description,locationString,locationLat,locationLong,imageUrl} = foundProposal;
 
+        // source.
         const product = await stripe.products.create({
-            name: `${foundProposal.name}-source`,
+            name: name,
         });
+        console.log(product);
 
         const pricex = await stripe.prices.create({
-            unit_amount: `${foundProposal.proposedSourceCost}`,
+            unit_amount: sourceCost,
             currency: 'inr',
             product: product.id,
         });
+
+        console.log(pricex);
+
+        //subscription.
+        const sproduct = await stripe.products.create({
+            name: `${name}-S`,
+        });
+        console.log(sproduct);
+        const spricex = await stripe.prices.create({
+            unit_amount: subscriptionPrice,
+            currency: 'inr',
+            recurring: {interval: 'month'},
+            product: sproduct.id,
+        });
+
+        console.log(spricex);
 
         let source = new Source({
             name,
@@ -110,7 +128,10 @@ router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => 
             locationLong,
             imageUrl,
             maxCapacity:30,
-            priceId:pricex.id
+            productId:product.id,
+            priceId:pricex.id,
+            sProductId:sproduct.id,
+            sPriceId:spricex.id,
         });
 
         await source.save();
