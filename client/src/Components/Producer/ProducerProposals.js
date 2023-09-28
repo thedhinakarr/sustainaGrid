@@ -172,7 +172,7 @@ export default function ProducerProposal() {
                     htmlFor="confirm-password"
                     className="block mb-2 text-sm font-medium text-white"
                   >
-                    proposedSourceCost
+                    proposedSourceCost less than --> 99999999
                   </label>
                   <input
                     type="text"

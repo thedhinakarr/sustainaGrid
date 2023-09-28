@@ -75,7 +75,7 @@ router.post("/addProposal", isAuthenticated, upload.fields([
 router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => {
     try {
 
-        if (req.payload.id != "643fbf124d159f872deee32d") {
+        if (req.payload.id != "644ba9a86b47fdea44b2380f") {
             res.status(401).json({ "message": "Unauthorised" });
         }
 
@@ -85,7 +85,7 @@ router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => 
             res.status(404).json({ "message": "Proposal not found" });
         }
         
-        let {name, proposedResourceType,proposedEnergyType,proposedEnergyGenerated,proposedSourceCost,proposedSubscriptionPrice,description,locationString,locationLat,locationLong,imageUrl} = foundProposal;
+        let {name,proposedResourceType,proposedEnergyType,proposedEnergyGenerated,proposedSourceCost,proposedSubscriptionPrice,description,locationString,locationLat,locationLong,imageUrl} = foundProposal;
 
         // source.
         const product = await stripe.products.create({
@@ -94,7 +94,7 @@ router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => 
         console.log(product);
 
         const pricex = await stripe.prices.create({
-            unit_amount: sourceCost,
+            unit_amount: proposedSourceCost,
             currency: 'inr',
             product: product.id,
         });
@@ -107,7 +107,7 @@ router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => 
         });
         console.log(sproduct);
         const spricex = await stripe.prices.create({
-            unit_amount: subscriptionPrice,
+            unit_amount: proposedSubscriptionPrice,
             currency: 'inr',
             recurring: {interval: 'month'},
             product: sproduct.id,
@@ -169,7 +169,7 @@ router.post("/rejectApproval/:approvalId", isAuthenticated, async (req, res) => 
 
 router.get("/getAllApprovals", isAuthenticated, async (req, res) => {
     try {
-        if (req.payload.id != "643fbf124d159f872deee32d") {
+        if (req.payload.id != "644ba9a86b47fdea44b2380f") {
             res.status(401).json({ "message": "Unauthorised" });
         }
 

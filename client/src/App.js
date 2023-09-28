@@ -21,6 +21,9 @@ import GovtDash from "./Components/Govt/GovtDash";
 import ApprovalProfile from "./Components/Govt/ApprovalProfile";
 import GovtLocationAnalyzer from "./Components/Govt/GovtLocationAnalyzer";
 import AddSourcePage from "./Components/Govt/AddSourcePage";
+import DeleteSubPage from "./Components/Consumer/DeleteSub";
+import CRejection from "./Components/Consumer/CRejection";
+import PRejection from "./Components/Producer/PRejection";
 
 function App() {
   return (
@@ -30,6 +33,7 @@ function App() {
       <Route path="/register" element={<Registration/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path="/govtLogin" element={<GovtLogin/>}/>
+      
 
       <Route element={<PrivateRoute/>}>
 
@@ -40,6 +44,8 @@ function App() {
       <Route path="/producerSourceProfile/:id" element={<ProducerSourceProfile/>}/>
       <Route path="/producerCheckoutPage/:id" element={<ProducerCheckoutPage/>}/>
       <Route path="/producerLocationAnalyser/:id" element={<ProducerLocationAnalyser/>} />
+      <Route path="/pRejection" element={<PRejection/>}/>
+      {/* Add rejection pages */}
 
       <Route path="/consumerDashBoard" element={<ConsumerDash/>}/>
       <Route path="/groot" element={<AICHAT/>}/>
@@ -47,11 +53,16 @@ function App() {
       <Route path="/locationAnalyser/:id" element={<Home/>}/>
       <Route path="/sourceProfile/:id" element={<SourceProfile/>}/>
       <Route path="/checkoutPage/:id" element={<CheckoutPage/>}/>
+      <Route path="/deleteSub/:id" element={<DeleteSubPage/>}/>
+      <Route path="/cRejection" element={<CRejection/>}/>
+      {/* Add rejection pages */}
 
       <Route path="/govtDashBoard" element={<GovtDash/>}/>
       <Route path="/approvalProfile/:id" element={<ApprovalProfile/>}/>
       <Route path="/govtLocationAnalyzer/:id" element={<GovtLocationAnalyzer/>}/>
       <Route path="/addSource/:id" element={<AddSourcePage/>}/>
+      {/* Add rejection pages */}
+
       
       {/* <Route path="/monitorUsers" element={<GovtMap/>}/> */}
       {/* <Route path="/monitorSources" element={}/> */}

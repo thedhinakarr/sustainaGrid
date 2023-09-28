@@ -45,8 +45,8 @@ export default function ProducerApprovals() {
 approvalData.forEach( (ele) => {
   approvals.push(
       <div className="flex flex-col mb-2 mr-2 p-8 border rounded-lg border-susYGreen">
-              <span className='text-white font-semibold'>Approval ID <span className='hover:text-susZGreen'>{ele._id}</span></span>
-              <span className='text-white font-semibold'>Source name <span className='hover:text-susZGreen'>{ele.name}</span></span>
+              <span className='text-white font-semibold'>Approval ID: <span className='hover:text-susZGreen'>{ele._id}</span></span>
+              <span className='text-white font-semibold'>Source name: <span className='hover:text-susZGreen'>{ele.name}</span></span>
               <span className='text-white mb-4 font-semibold'>Approval Status: <span className='hover:text-susZGreen cursor-pointer focus:cursor-auto' >{ele.state}</span></span>
       </div>
 

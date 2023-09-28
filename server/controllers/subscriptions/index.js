@@ -19,17 +19,19 @@ router.post("/addSubscription/:sourceId",isAuthenticated,async (req,res)=>{
         let foundUser = await User.findOne({_id:req.payload.id});
         let foundSource = await Source.findOne({_id:req.params.sourceId})
 
+        console.log(foundSource)
+
         const session = await stripe.checkout.sessions.create({
             line_items: [{
-                price: foundSource.sPriceId,
+                price: foundSource.sPriceId,// data is corrupted, fx this shit.
                 quantity: 1,
               }],
               mode: 'subscription',
-            success_url: `http://localhost:3000/consumerDashBoard`,
-            cancel_url: `http://localhost:3000/rejected`,
+            success_url: `http://localhost:3000/consumerDashBoard`, // Notice the ip address, it keeps changing
+            cancel_url: `http://localhost:3000/cRejection`,
         });
           
-        console.log(session.url)
+        console.log(session.url);
 
         let newSub = new Subscription({
             "subscribedTo":foundSource._id,

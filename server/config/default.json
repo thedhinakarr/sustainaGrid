@@ -1,6 +1,6 @@
 {
     "PORT": 3069,
-    "DB_URI": "mongodb+srv://thedhinakarr:Dhinakar1%40@cluster0.zdl2lue.mongodb.net/sustainaGrid?retryWrites=true&w=majority",
+    "DB_URI": "mongodb+srv://thedhinakarr:Dhinakar1%40@cluster0.zdl2lue.mongodb.net/sustainaGridx?retryWrites=true&w=majority",
     "JWT_SECRET": "sustainthis",
     "URL": "http://127.0.0.1:5001",
     "OPENAI_KEY":"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"

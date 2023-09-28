@@ -12,7 +12,7 @@ export default function AddSourcePage() {
     let ls = localStorage.getItem("token");
     ls = JSON.parse(ls);
 
-    async function handleSubscribe(e) {
+    async function handleApprove(e) {
         try {
             e.preventDefault();
            
@@ -35,12 +35,13 @@ export default function AddSourcePage() {
             "maxCapacity":30,
             "locationString":sourceDetails.data[0].locationString,
             "locationLat":sourceDetails.data[0].locationLat,
-            "locationLong":sourceDetails.data[0].locationLong
+            "locationLong":sourceDetails.data[0].locationLong,
+            "imageUrl":sourceDetails.data[0].imageUrl
         }
 
-        let url = await axios.post(`/api/sources/addSource`,x,config);
+        let url = await axios.post(`/api/approvals/acceptProposal/${params.id}`,x,config);
         console.log(url);
-        
+        navigate("/govtDashBoard");
         } catch (error) {
             console.log(error);
         }
@@ -52,7 +53,7 @@ export default function AddSourcePage() {
             <div className="h-screen flex justify-center items-center">
                 <div className="text-center">
                     <h1 className="text-4xl font-bold mb-8"> You will be approving the proposal --{'>'} <span className='text-susZGreen'>{params.id}</span> </h1>
-                    <button onClick={handleSubscribe} className=" text-3xl hover:bg-susZGreen hover:text-susBlack text-white font-bold py-2 px-4 rounded">
+                    <button onClick={handleApprove} className=" text-3xl hover:bg-susZGreen hover:text-susBlack text-white font-bold py-2 px-4 rounded">
                        Approve
                     </button>
                 </div>

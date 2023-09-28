@@ -30,6 +30,7 @@ router.post("/buySource/:sourceId", isAuthenticated, async (req, res) => {
         console.log(req.params.sourceId)
         let foundSource = await Source.findOne({_id:req.params.sourceId});
         let foundUser = await User.findOne({_id:req.payload.id});
+        console.log(foundSource);
 
         const session = await stripe.checkout.sessions.create({
             line_items: [
@@ -40,7 +41,7 @@ router.post("/buySource/:sourceId", isAuthenticated, async (req, res) => {
             ],
             mode: 'payment',
             success_url: `http://localhost:3000/producerDashBoard`,
-            cancel_url: `http://localhost:3000/rejected`,
+            cancel_url: `http://localhost:3000/pRejection`,
         });
 
        console.log(session.url);
@@ -69,7 +70,7 @@ router.post("/addSource", isAuthenticated, async (req, res) => {
         }
         
         console.log(findEmail);
-        if (findEmail._id != "643fbf124d159f872deee32d") {
+        if (findEmail._id != "644ba9a86b47fdea44b2380f") {
             return res.status(400).json({ message: "Unauthorized" });
         }
 
@@ -113,8 +114,10 @@ router.post("/addSource", isAuthenticated, async (req, res) => {
             locationString,
             locationLat,
             locationLong,
+
             productId:product.id,
             priceId:pricex.id,
+            
             sProductId:sproduct.id,
             sPriceId:spricex.id,
         })
@@ -128,13 +131,13 @@ router.post("/addSource", isAuthenticated, async (req, res) => {
     }
 })
 
-router.post("/editSourceProfile/:sourcename", isAuthenticated, uploadSource.single('picture'), async (req, res) => {
+router.post("/editSourceProfile/:sourcename",  uploadSource.single('picture'), async (req, res) => {
     try {
         console.log(req.file);
 
-        if (req.payload.id != "643fbf124d159f872deee32d") {
-            return res.status(400).json({ message: "Unauthorized" });
-        }
+        // if (req.payload.id != "643fbf124d159f872deee32d") {
+        //     return res.status(400).json({ message: "Unauthorized" });
+        // }
 
         let foundSource = await Source.findOne({ name: req.params.sourcename });
 

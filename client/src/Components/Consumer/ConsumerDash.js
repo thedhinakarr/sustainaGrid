@@ -54,7 +54,7 @@ export default function ConsumerDash() {
             <div className="flex flex-col mb-2 mr-2 p-8 border rounded-lg border-susYGreen">
                     <span className='text-white font-semibold'>SUB_ID: <span className='hover:text-susZGreen'>{ele._id}</span></span>
                     <span className='text-white mb-4 font-semibold'>SUBSCRIBED TO: <span className='hover:text-susZGreen cursor-pointer focus:cursor-auto' >{ele.subscribedTo}</span></span>
-                    <button className='mt-1 hover:text-red font-semibold'>DELETE</button>
+                    <button onClick={()=>{navigate(`/deleteSub/${ele._id}`)}} className='mt-1 hover:text-red font-semibold'>DELETE</button>
             </div>
 
         )

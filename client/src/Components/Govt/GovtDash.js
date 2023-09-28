@@ -30,7 +30,8 @@ export default function GovtDash() {
                 let authData = await axios.post("/api/user/auth", { "token": token });
                 console.log(authData.data.id);
 
-                if (authData.data.id !== "643fbf124d159f872deee32d") {
+                if (authData.data.id !== "644ba9a86b47fdea44b2380f") {
+                    localStorage.removeItem("token");
                     navigate("/");
                 }
 
