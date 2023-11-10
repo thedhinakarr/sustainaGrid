@@ -16,40 +16,40 @@ let URL = config.get("URL");
 const storage = multer.diskStorage({
 
     destination: function (req, file, cb) {
-      cb(null, "./assets/profileImages");
+        cb(null, "./assets/profileImages");
     },
-  
+
     filename: function (req, file, cb) {
-      let ext = file.mimetype.split("/")[1];
-      cb(null, file.fieldname + "-" + Date.now() + "." + ext);
+        let ext = file.mimetype.split("/")[1];
+        cb(null, file.fieldname + "-" + Date.now() + "." + ext);
     },
-  
+
 });
 
 const upload = multer({ storage: storage });
 
 router.post("/auth", async (req, res) => {
     try {
-      console.log(req.body.token);
-      let letgov =  jwt.verify(req.body.token,config.get("JWT_SECRET"));
-      console.log(letgov);
-      return res.status(200).json(letgov);
+        console.log(req.body.token);
+        let letgov = jwt.verify(req.body.token, config.get("JWT_SECRET"));
+        console.log(letgov);
+        return res.status(200).json(letgov);
 
     } catch (error) {
-      console.log(error);
-      return res.status(500).json({ error: "Internal server error" });
+        console.log(error);
+        return res.status(500).json({ error: "Internal server error" });
     }
 });
 
-router.post("/register",registerValidations(),errorMiddleWare,async (req, res) => {
-    try{
-        let {name,email,password,locationString,locationLat,locationLong,twitterUrl} = req.body;
+router.post("/register", registerValidations(), errorMiddleWare, async (req, res) => {
+    try {
+        let { name, email, password, locationString, locationLat, locationLong, twitterUrl } = req.body;
         //Object deconstruction
 
         console.log(req.body);
 
         let findEmail = await User.findOne({ email: req.body.email });
-        
+
         if (findEmail) {
             return res.status(409).json({ error: "User already exists" });
         }
@@ -59,7 +59,7 @@ router.post("/register",registerValidations(),errorMiddleWare,async (req, res) =
         let user = new User({
             name,
             email,
-            password:hashedPassword,
+            password: hashedPassword,
             locationString,
             locationLat,
             locationLong,
@@ -71,39 +71,39 @@ router.post("/register",registerValidations(),errorMiddleWare,async (req, res) =
         await user.save();
 
         return res.status(200).json({ message: "User registered successfully" });
-    }catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(500).json({"message":"internal server error"})
+        res.status(500).json({ "message": "internal server error" })
     }
 });
 
-router.post("/editUserProfile",isAuthenticated,upload.single('picture'),async (req,res)=>{
+router.post("/editUserProfile", isAuthenticated, upload.single('picture'), async (req, res) => {
     try {
         console.log(req.payload);
 
-        let foundUser= await User.findOne({_id:req.payload.id});
-        if(!foundUser){
-            res.status(404).json({"message":"User not found"});
+        let foundUser = await User.findOne({ _id: req.payload.id });
+        if (!foundUser) {
+            res.status(404).json({ "message": "User not found" });
         }
 
         let filename = req.file.filename;
         let imageUrl = `/api/user/pic/${filename}`;
 
-        let updatedImg = await User.updateOne({_id:req.payload.id},{$set:{"imageUrl":imageUrl}})
+        let updatedImg = await User.updateOne({ _id: req.payload.id }, { $set: { "imageUrl": imageUrl } })
         console.log(updatedImg);
-        let updatedUser= await User.findOne({_id:req.payload.id});
-        res.status(200).json({"message":"Image updated successfully",updatedUser})
+        let updatedUser = await User.findOne({ _id: req.payload.id });
+        res.status(200).json({ "message": "Image updated successfully", updatedUser })
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({"message":"Internal server error"});
+        res.status(500).json({ "message": "Internal server error" });
     }
 })
 
-router.post("/login",loginValidations(),errorMiddleWare,async (req, res) => {
-    try{
+router.post("/login", loginValidations(), errorMiddleWare, async (req, res) => {
+    try {
         let { email, password } = req.body;
-        
+
         let findEmail = await User.findOne({ email: email });
 
         if (!findEmail) {
@@ -118,7 +118,7 @@ router.post("/login",loginValidations(),errorMiddleWare,async (req, res) => {
 
         let payload = {
             id: findEmail.id,
-            email:findEmail.email,
+            email: findEmail.email,
         }
 
         let token = generateToken(payload);
@@ -130,122 +130,123 @@ router.post("/login",loginValidations(),errorMiddleWare,async (req, res) => {
             }
         );
 
-    }catch(err){
+    } catch (err) {
         console.log(error);
-        res.status(500).json({"message":"internal server error"})
+        res.status(500).json({ "message": "internal server error" })
     }
 });
 
-router.get("/getUserByToken",isAuthenticated, async (req, res) => {
-    try{
+router.get("/getUserByToken", isAuthenticated, async (req, res) => {
+    try {
         console.log(req.payload);
 
-        let foundUser = await User.findOne({_id:req.payload.id});
+        let foundUser = await User.findOne({ _id: req.payload.id });
 
-        if(!foundUser){
-            res.status(404).json({"message":"User not found"})
+        if (!foundUser) {
+            res.status(404).json({ "message": "User not found" })
         }
         else {
-            res.status(200).json({"user":foundUser})
+            res.status(200).json({ "user": foundUser })
         }
-    }catch(err){
-        res.status(500).json({"message":"internal server error"})
+    } catch (err) {
+        res.status(500).json({ "message": "internal server error" })
     }
 });
 
-router.get("/getUserDetailsById/:id",isAuthenticated,async (req,res)=>{
+router.get("/getUserDetailsById/:id", isAuthenticated, async (req, res) => {
     try {
         let token = req.params.id;
         console.log(token);
-        let foundUser = await User.findOne({_id:token});
-        if(!foundUser){
-            res.status(404).json({"Message":"User not found"});
+        let foundUser = await User.findOne({ _id: token });
+        if (!foundUser) {
+            res.status(404).json({ "Message": "User not found" });
         }
-        else{
-            res.status(200).json({"user":foundUser})
+        else {
+            res.status(200).json({ "user": foundUser })
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({"message":"Internal server error"})
+        res.status(500).json({ "message": "Internal server error" })
     }
 })
 
-router.get("/getLocationString",isAuthenticated,async (req, res) => {
-    try{
+router.get("/getLocationString", isAuthenticated, async (req, res) => {
+    try {
 
-        let foundUser = await User.findOne({_id:req.payload.id});
-        if(!foundUser){
-            res.status(404).json({"message":"User not found"})
+        let foundUser = await User.findOne({ _id: req.payload.id });
+
+        if (!foundUser) {
+            res.status(404).json({ "message": "User not found" })
         }
         else {
-            res.status(200).json({"locationString":foundUser.locationString})
+            res.status(200).json({ "locationString": foundUser.locationString })
         }
 
-        res.status(200).json({"message":"getLocationString hit"});
-    }catch(err){
-        res.status(500).json({"message":"internal server error"})
+        res.status(200).json({ "message": "getLocationString hit" });
+    } catch (err) {
+        res.status(500).json({ "message": "internal server error" })
     }
 });
 
-router.get("/getLatLong",isAuthenticated,async (req, res) => {
-    try{
+router.get("/getLatLong", isAuthenticated, async (req, res) => {
+    try {
         console.log(req.payload)
-       let foundUser = await User.findOne({_id:req.payload.id});
-        if(!foundUser){
-            res.status(404).json({"message":"User not found"})
+        let foundUser = await User.findOne({ _id: req.payload.id });
+        if (!foundUser) {
+            res.status(404).json({ "message": "User not found" })
         }
         else {
-            res.status(200).json({"lat":foundUser.locationLat,"long":foundUser.locationLong})
+            res.status(200).json({ "lat": foundUser.locationLat, "long": foundUser.locationLong })
         }
-        
-        res.status(200).json({"message":"getLocationString hit"});
-    }catch(err){
+
+        res.status(200).json({ "message": "getLocationString hit" });
+    } catch (err) {
         console.log(err)
-        res.status(500).json({"message":"internal server error"})
+        res.status(500).json({ "message": "internal server error" })
     }
 });
 
-router.get("/getAllLatLong",isAuthenticated,async (req, res) => {
-    try{
+router.get("/getAllLatLong", isAuthenticated, async (req, res) => {
+    try {
         console.log(req.payload);
         let x = await User.find();
 
-        let y = x.map((ele)=>{
-            return {"lat":ele.locationLat,"lng":ele.locationLong};
+        let y = x.map((ele) => {
+            return { "lat": ele.locationLat, "lng": ele.locationLong };
         })
 
         res.status(200).json(y);
-    }catch(err){
-        res.status(500).json({"message":"internal server error"})
+    } catch (err) {
+        res.status(500).json({ "message": "internal server error" })
     }
 });
 
-router.get("/getAllLocationStrings",isAuthenticated,async (req, res) => {
-    try{
+router.get("/getAllLocationStrings", isAuthenticated, async (req, res) => {
+    try {
         console.log(req.payload);
         let x = await User.find();
 
-        let y = x.map((ele)=>{
-            return {"stringL":ele.locationString};
+        let y = x.map((ele) => {
+            return { "stringL": ele.locationString };
         })
 
         res.status(200).json(y);
-    }catch(err){
-        res.status(500).json({"message":"internal server error"})
+    } catch (err) {
+        res.status(500).json({ "message": "internal server error" })
     }
 });
 
-router.get("/getLatLongById/:id",isAuthenticated,async (req,res)=>{
+router.get("/getLatLongById/:id", isAuthenticated, async (req, res) => {
     try {
         console.log(req.params.id);
-        
-        let u = await User.find({_id:req.params._id});
 
-        res.status(200).json({"lat":u.locationLat,"long":u.locationLong});
-        
+        let u = await User.find({ _id: req.params._id });
+
+        res.status(200).json({ "lat": u.locationLat, "long": u.locationLong });
+
     } catch (error) {
         console.log(error);
-        res.status(500).json({"message":"Internal server error"});
+        res.status(500).json({ "message": "Internal server error" });
     }
 })
 
