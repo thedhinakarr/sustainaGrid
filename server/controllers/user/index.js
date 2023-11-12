@@ -4,15 +4,16 @@ import bcrypt from "bcrypt";
 import multer from "multer";
 import jwt from "jsonwebtoken";
 
-
 import User from "../../models/User.js";
 import { registerValidations, loginValidations, errorMiddleWare } from "../../middleware/generalValidations.js";
 import { generateToken } from "../../middleware/authValidation.js";
 import { isAuthenticated } from "../../middleware/authValidation.js";
 
 const router = express.Router();
-let URL = config.get("URL");
 
+//A storage engine instantiated 
+//to upload the user profile images stored in /assets/profileImages
+//Beware, the images are stored on the server not the database.
 const storage = multer.diskStorage({
 
     destination: function (req, file, cb) {
@@ -28,22 +29,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post("/auth", async (req, res) => {
-    try {
-        console.log(req.body.token);
-        let letgov = jwt.verify(req.body.token, config.get("JWT_SECRET"));
-        console.log(letgov);
-        return res.status(200).json(letgov);
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error: "Internal server error" });
-    }
-});
+//A total of 11 API endpoints here.
 
 router.post("/register", registerValidations(), errorMiddleWare, async (req, res) => {
     try {
-        let { name, email, password, locationString, locationLat, locationLong, twitterUrl } = req.body;
+        let { name, email, password, locationString, locationLat, locationLong } = req.body;
         //Object deconstruction
 
         console.log(req.body);
@@ -63,7 +53,6 @@ router.post("/register", registerValidations(), errorMiddleWare, async (req, res
             locationString,
             locationLat,
             locationLong,
-            twitterUrl,
         });
 
         console.log(user);
@@ -76,29 +65,6 @@ router.post("/register", registerValidations(), errorMiddleWare, async (req, res
         res.status(500).json({ "message": "internal server error" })
     }
 });
-
-router.post("/editUserProfile", isAuthenticated, upload.single('picture'), async (req, res) => {
-    try {
-        console.log(req.payload);
-
-        let foundUser = await User.findOne({ _id: req.payload.id });
-        if (!foundUser) {
-            res.status(404).json({ "message": "User not found" });
-        }
-
-        let filename = req.file.filename;
-        let imageUrl = `/api/user/pic/${filename}`;
-
-        let updatedImg = await User.updateOne({ _id: req.payload.id }, { $set: { "imageUrl": imageUrl } })
-        console.log(updatedImg);
-        let updatedUser = await User.findOne({ _id: req.payload.id });
-        res.status(200).json({ "message": "Image updated successfully", updatedUser })
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ "message": "Internal server error" });
-    }
-})
 
 router.post("/login", loginValidations(), errorMiddleWare, async (req, res) => {
     try {
@@ -136,6 +102,42 @@ router.post("/login", loginValidations(), errorMiddleWare, async (req, res) => {
     }
 });
 
+router.post("/auth", async (req, res) => {
+    try {
+        console.log(req.body.token);
+        let letgov = jwt.verify(req.body.token, config.get("JWT_SECRET"));
+        console.log(letgov);
+        return res.status(200).json(letgov);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Unauthorized." });
+    }
+});
+
+router.post("/editUserProfile", isAuthenticated, upload.single('picture'), async (req, res) => {
+    try {
+        console.log(req.payload);
+
+        let foundUser = await User.findOne({ _id: req.payload.id });
+        if (!foundUser) {
+            res.status(404).json({ "message": "User not found" });
+        }
+
+        let filename = req.file.filename;
+        let imageUrl = `/api/user/pic/${filename}`;
+
+        let updatedImg = await User.updateOne({ _id: req.payload.id }, { $set: { "imageUrl": imageUrl } })
+        console.log(updatedImg);
+        let updatedUser = await User.findOne({ _id: req.payload.id });
+        res.status(200).json({ "message": "Image updated successfully", updatedUser })
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ "message": "Internal server error" });
+    }
+})
+
+//Returns user details based on the payload in jwt.
 router.get("/getUserByToken", isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload);
@@ -153,6 +155,7 @@ router.get("/getUserByToken", isAuthenticated, async (req, res) => {
     }
 });
 
+//Returns user details based on the id of the user in the params.
 router.get("/getUserDetailsById/:id", isAuthenticated, async (req, res) => {
     try {
         let token = req.params.id;
@@ -170,6 +173,7 @@ router.get("/getUserDetailsById/:id", isAuthenticated, async (req, res) => {
     }
 })
 
+//Returns the location string of the user based on the payload.
 router.get("/getLocationString", isAuthenticated, async (req, res) => {
     try {
 
@@ -188,6 +192,7 @@ router.get("/getLocationString", isAuthenticated, async (req, res) => {
     }
 });
 
+//Returns the location coordinates of the user based on the payload.
 router.get("/getLatLong", isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload)
@@ -206,6 +211,7 @@ router.get("/getLatLong", isAuthenticated, async (req, res) => {
     }
 });
 
+//Returns the location coordinates of all the users in the database. Should be accessed by govt only.
 router.get("/getAllLatLong", isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload);
@@ -221,6 +227,7 @@ router.get("/getAllLatLong", isAuthenticated, async (req, res) => {
     }
 });
 
+//Returns the locations strings of all the users in the database. Should be only government.
 router.get("/getAllLocationStrings", isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload);
@@ -236,6 +243,7 @@ router.get("/getAllLocationStrings", isAuthenticated, async (req, res) => {
     }
 });
 
+//Returns the location coordinates of a user whose id is give in the params of the request.
 router.get("/getLatLongById/:id", isAuthenticated, async (req, res) => {
     try {
         console.log(req.params.id);

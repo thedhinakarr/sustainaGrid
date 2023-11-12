@@ -3,5 +3,6 @@
     "DB_URI": "mongodb+srv://thedhinakarr:Dhinakar1%40@cluster0.zdl2lue.mongodb.net/sustainaGridx?retryWrites=true&w=majority",
     "JWT_SECRET": "sustainthis",
     "URL": "http://127.0.0.1:5001",
-    "OPENAI_KEY":"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"
+    "OPENAI_KEY":"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",
+    "STRIPE_KEY":"sk_test_51MyvmbSGiNjG3rZcOfyOBofLOfZ2oyBYOv4hmuaJ0xmXZyFub3XLThUqtUDzdeECB1V95EG2tLtrAhhtOyToT05V0045wTunku"
 }

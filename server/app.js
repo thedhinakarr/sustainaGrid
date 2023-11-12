@@ -25,6 +25,8 @@ app.use("/api/subscriptions/",subscriptionRouter);
 app.use("/api/approvals/",approvalRouter);
 app.use("/api/ai/",AIrouter);
 
+/* A total of 34 API endpoints as of 11/11/23 */
+
 app.get("/", (req,res)=>{
     res.send("Server is up")
 })

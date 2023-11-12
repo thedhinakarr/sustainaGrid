@@ -33,8 +33,8 @@ let userSchema = new mongoose.Schema(
             type: Boolean,
             default:false
         },
-        approvals:{
-            type: [{ type : mongoose.Schema.Types.ObjectId, ref: 'Approvals' }],
+        proposals:{
+            type: [{ type : mongoose.Schema.Types.ObjectId, ref: 'Proposals' }],
             default:[]
         },
         locationString:{
@@ -53,10 +53,6 @@ let userSchema = new mongoose.Schema(
             type: String,
             required: false
         },
-        twitterUrl:{
-            type: String,
-            required: false
-        }
     },
     {timestamps:true}
 );

@@ -4,12 +4,15 @@ import { isAuthenticated } from "../../middleware/authValidation.js";
 import Proposal from "../../models/Proposals.js";
 import User from "../../models/User.js";
 import Source from "../../models/Sources.js";
+import config from "config";
 
 import Stripe from "stripe";
-const stripe = Stripe(`sk_test_51MyvmbSGiNjG3rZcOfyOBofLOfZ2oyBYOv4hmuaJ0xmXZyFub3XLThUqtUDzdeECB1V95EG2tLtrAhhtOyToT05V0045wTunku`)
+//SENSITIVE INFORMATION.
+const stripe = Stripe(config.get("STRIPE_KEY"));
 
+/* A total of 6 APIs here. */
 
-
+//STORAGE ENGINE TO STORE THE PDFS OF THE PROPOSALS MADE
 const storage = multer.diskStorage({
 
     destination: function (req, file, cb) {
@@ -23,11 +26,11 @@ const storage = multer.diskStorage({
 
 });
 
-
 const upload = multer({ storage: storage });
 
 let router = express.Router();
 
+//A route to add a proposal, made by a producer
 router.post("/addProposal", isAuthenticated, upload.fields([
     { name: 'proposal' },
     { name: 'picture'}
@@ -72,6 +75,7 @@ router.post("/addProposal", isAuthenticated, upload.fields([
     }
 });
 
+//Only for the government, in order to accept a proposal, by using the proposal ID mentioned in the params
 router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => {
     try {
 
@@ -145,6 +149,7 @@ router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => 
     }
 })
 
+//Only for the government, in order to reject a proposal, by using the proposal ID mentioned in the params
 router.post("/rejectApproval/:approvalId", isAuthenticated, async (req, res) => {
     try {
         if (req.payload.id != "643fbf124d159f872deee32d") {
@@ -167,6 +172,7 @@ router.post("/rejectApproval/:approvalId", isAuthenticated, async (req, res) => 
     }
 })
 
+//Only for the govt, to list all the proposals made by producers.
 router.get("/getAllApprovals", isAuthenticated, async (req, res) => {
     try {
         if (req.payload.id != "644ba9a86b47fdea44b2380f") {
@@ -182,6 +188,7 @@ router.get("/getAllApprovals", isAuthenticated, async (req, res) => {
     }
 })
 
+//Get the proposals made by a particular producer, logged in.
 router.get("/getApprovalsByToken", isAuthenticated, async (req, res) => {
     try {
         let x = await Proposal.find({proposalBy:req.payload.id});
@@ -192,7 +199,7 @@ router.get("/getApprovalsByToken", isAuthenticated, async (req, res) => {
     }
 })
 
-
+//A route for search functionality, gives back a particular route as mentioned in the params.
 router.get("/getApprovalById/:id", isAuthenticated, async (req, res) => {
     try {
         let x = await Proposal.find({_id:req.params.id});
@@ -202,7 +209,6 @@ router.get("/getApprovalById/:id", isAuthenticated, async (req, res) => {
         res.status(500).json({ "message": "internal server error" });
     }
 })
-
 
 export default router;
 

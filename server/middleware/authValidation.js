@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import config from "config";
 
+//this function generates the jwt token, 
+//which will be used to authenticate the requests made by the client.
 const generateToken = (payload)=>{
     try {
         const token = jwt.sign(payload,config.get(`JWT_SECRET`),{expiresIn:`24h`});
@@ -11,6 +13,8 @@ const generateToken = (payload)=>{
     }
 };
 
+//Everytime a request is hits an API endpoint on the server, this fuction is invoked, 
+//which checks the authenticity of the the client trying to make the request.
 const isAuthenticated = (req,res,next)=>{
     try {
         let token = req.headers["auth-token"];

@@ -7,9 +7,13 @@ import Subscription from "../../models/Subscriptions.js";
 
 import { isAuthenticated } from "../../middleware/authValidation.js";
 
+/* A total of 5 API endpoints here. */
+
+//HIDE THE STRIPE ID
 const stripe = Stripe(`sk_test_51MyvmbSGiNjG3rZcOfyOBofLOfZ2oyBYOv4hmuaJ0xmXZyFub3XLThUqtUDzdeECB1V95EG2tLtrAhhtOyToT05V0045wTunku`);
 const router = express.Router();
 
+//Adds a new subscription to a particular source in the database.
 router.post("/addSubscription/:sourceId",isAuthenticated,async (req,res)=>{
     try {
 
@@ -21,6 +25,7 @@ router.post("/addSubscription/:sourceId",isAuthenticated,async (req,res)=>{
 
         console.log(foundSource)
 
+        //Session created for subscription to a particular source.
         const session = await stripe.checkout.sessions.create({
             line_items: [{
                 price: foundSource.sPriceId,// data is corrupted, fx this shit.
@@ -49,6 +54,7 @@ router.post("/addSubscription/:sourceId",isAuthenticated,async (req,res)=>{
     }
 })
 
+//Ends the subscription of a particular user, mentioned in the payload.
 router.delete("/deleteSubscription/:subId",isAuthenticated,async (req,res)=>{
     try {
         console.log(req.params.subId);
@@ -70,6 +76,7 @@ router.delete("/deleteSubscription/:subId",isAuthenticated,async (req,res)=>{
     }
 })
 
+//Lists all the subscriptions made by the logged user.
 router.get("/getSubInformationByToken",isAuthenticated,async (req,res)=>{
     try {
         console.log(`User ID--> ${req.payload.id}`);
@@ -85,6 +92,7 @@ router.get("/getSubInformationByToken",isAuthenticated,async (req,res)=>{
     }
 })
 
+//Returns the subscriptions made by the userid mentioned in the params
 router.get("/getSubInformationByUserId/:userId",isAuthenticated,async (req,res)=>{
     try {
         console.log(`User ID--> ${req.params.userId}`);
@@ -100,6 +108,7 @@ router.get("/getSubInformationByUserId/:userId",isAuthenticated,async (req,res)=
     }
 })
 
+//Returns the subscriptions made to a particular source by its sourceId mentioned in the params
 router.get("/getSubInformationBySourceId/:sourceId",isAuthenticated,async (req,res)=>{
     try {
         console.log(`User ID--> ${req.params.sourceId}`);

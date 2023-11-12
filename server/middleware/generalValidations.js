@@ -1,5 +1,7 @@
 import {body,validationResult} from "express-validator"
 
+//When a user registers from the client, a json object consisting credentials of the
+//user is sent to the server, these are validated by this function below.
 const registerValidations = () =>{
     return[
         body("name","first name must be 3-30 chars long").isLength({max:30,min:3}),
@@ -14,6 +16,8 @@ const registerValidations = () =>{
     ];
 };
 
+//When a user registers from the client, a json object consisting credentials of the
+//user is sent to the server, these are validated by this function below.
 const loginValidations =()=>{
     return[
         body("email","enter valid email.").isEmail(),
@@ -22,7 +26,9 @@ const loginValidations =()=>{
 };
 
 const errorMiddleWare = (req,res,next) =>{
+    
     const errors = validationResult(req);
+
     if(errors.isEmpty==false){
         return res.status(400).json({errors: errors.array() });
     }

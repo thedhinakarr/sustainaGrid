@@ -7,9 +7,14 @@ import Source from "../../models/Sources.js";
 import { isAuthenticated } from "../../middleware/authValidation.js";
 import fs from "fs/promises";
 
+//Need to change this. Vulnerable information is being displayed.Use config.
 const stripe = Stripe(`sk_test_51MyvmbSGiNjG3rZcOfyOBofLOfZ2oyBYOv4hmuaJ0xmXZyFub3XLThUqtUDzdeECB1V95EG2tLtrAhhtOyToT05V0045wTunku`);
 const router = express.Router();
 
+/* A total of 11 API endpoints here. */
+
+//Source storage engine, stores the source's images.
+//Images are stored on the server. /assets/sourceImages
 const sourceStorage = multer.diskStorage({
 
     destination: function (req, file, cb) {
@@ -25,13 +30,15 @@ const sourceStorage = multer.diskStorage({
 
 const uploadSource = multer({ storage: sourceStorage });
 
+//API endpoint to buy a source, needs the source id.
 router.post("/buySource/:sourceId", isAuthenticated, async (req, res) => {
     try {
-        console.log(req.params.sourceId)
+        console.log(req.params.sourceId);
         let foundSource = await Source.findOne({_id:req.params.sourceId});
         let foundUser = await User.findOne({_id:req.payload.id});
         console.log(foundSource);
 
+        //Hitting the stripe's API, will create take us to the checkout page of stripe.
         const session = await stripe.checkout.sessions.create({
             line_items: [
               {
@@ -57,6 +64,7 @@ router.post("/buySource/:sourceId", isAuthenticated, async (req, res) => {
     }
 })
 
+//Creates a new source in the database, hit after approval by the govt.
 router.post("/addSource", isAuthenticated, async (req, res) => {
     try {
 
@@ -74,7 +82,8 @@ router.post("/addSource", isAuthenticated, async (req, res) => {
             return res.status(400).json({ message: "Unauthorized" });
         }
 
-        // source.
+        // Need to create a new product in the catalog of stripe in order to process
+        // when someone buys a source.
         const product = await stripe.products.create({
             name: name,
         });
@@ -89,6 +98,10 @@ router.post("/addSource", isAuthenticated, async (req, res) => {
         console.log(pricex);
 
         //subscription.
+        /*
+         The created product also needs to have a mechanisms to support subscription.
+         The following code initiates a subscription functionality for the added source.
+        */
         const sproduct = await stripe.products.create({
             name: `${name}-S`,
         });
@@ -102,6 +115,7 @@ router.post("/addSource", isAuthenticated, async (req, res) => {
 
         console.log(spricex);
 
+        //Final creation of the source, this data is added to the database.
         let source = new Source({
             name,
             resourceType,
@@ -131,6 +145,7 @@ router.post("/addSource", isAuthenticated, async (req, res) => {
     }
 })
 
+//Editing a source's information, should be done only by the govt.
 router.post("/editSourceProfile/:sourcename",  uploadSource.single('picture'), async (req, res) => {
     try {
         console.log(req.file);
@@ -159,6 +174,7 @@ router.post("/editSourceProfile/:sourcename",  uploadSource.single('picture'), a
 
 })
 
+//Returns information of all the sources.
 router.get("/getAllSources", isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload);
@@ -170,6 +186,7 @@ router.get("/getAllSources", isAuthenticated, async (req, res) => {
     }
 })
 
+//Returns the coordinates of all the sources in the database.
 router.get("/getAllSourcesLatLong", isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload);
@@ -184,6 +201,7 @@ router.get("/getAllSourcesLatLong", isAuthenticated, async (req, res) => {
     }
 })
 
+//Returns the sources owned by the logged user.
 router.get("/getSourcesByToken", isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload);
@@ -195,6 +213,7 @@ router.get("/getSourcesByToken", isAuthenticated, async (req, res) => {
     }
 })
 
+//Returns all the sources eligible for sale.
 router.get("/getAllSourcesWithoutOwners", async (req, res) => {
     try {
         console.log(req.payload);
@@ -206,6 +225,7 @@ router.get("/getAllSourcesWithoutOwners", async (req, res) => {
     }
 })
 
+//Returns all sources owned by someone, should be accessed by govt only.
 router.get("/getAllSourcesWithOwners", async (req, res) => {
     try {
         console.log(req.payload);
@@ -217,7 +237,7 @@ router.get("/getAllSourcesWithOwners", async (req, res) => {
     }
 })
 
-
+//Returns the sources information based on the params.
 router.get("/getSourceById/:id", isAuthenticated, async (req, res) => {
     try {
         console.log(req.params.id)
@@ -229,6 +249,7 @@ router.get("/getSourceById/:id", isAuthenticated, async (req, res) => {
     }
 })
 
+//Peculiar endpoint, should essentially be hit when ownership of a source changes.
 router.post("/editownerShip/:sourceName", isAuthenticated, async (req, res) => {
     try {
         console.log(req.body)
@@ -253,6 +274,7 @@ router.post("/editownerShip/:sourceName", isAuthenticated, async (req, res) => {
     }
 })
 
+//Adds price ID to a Source.
 router.post("/addStripePriceId/:sourcename", isAuthenticated, async (req, res) => {
     try {
         console.log(req.body.priceId);
