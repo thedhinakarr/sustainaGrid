@@ -10,7 +10,7 @@ import Stripe from "stripe";
 //SENSITIVE INFORMATION.
 const stripe = Stripe(config.get("STRIPE_KEY"));
 
-/* A total of 6 APIs here. */
+
 
 //STORAGE ENGINE TO STORE THE PDFS OF THE PROPOSALS MADE
 const storage = multer.diskStorage({
@@ -29,6 +29,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 let router = express.Router();
+
+/* A total of 6 APIs here. */
 
 //A route to add a proposal, made by a producer
 router.post("/addProposal", isAuthenticated, upload.fields([

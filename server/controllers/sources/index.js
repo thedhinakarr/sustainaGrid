@@ -11,8 +11,6 @@ import fs from "fs/promises";
 const stripe = Stripe(`sk_test_51MyvmbSGiNjG3rZcOfyOBofLOfZ2oyBYOv4hmuaJ0xmXZyFub3XLThUqtUDzdeECB1V95EG2tLtrAhhtOyToT05V0045wTunku`);
 const router = express.Router();
 
-/* A total of 11 API endpoints here. */
-
 //Source storage engine, stores the source's images.
 //Images are stored on the server. /assets/sourceImages
 const sourceStorage = multer.diskStorage({
@@ -30,6 +28,7 @@ const sourceStorage = multer.diskStorage({
 
 const uploadSource = multer({ storage: sourceStorage });
 
+/* A total of 11 API endpoints here. */
 //API endpoint to buy a source, needs the source id.
 router.post("/buySource/:sourceId", isAuthenticated, async (req, res) => {
     try {
@@ -63,7 +62,6 @@ router.post("/buySource/:sourceId", isAuthenticated, async (req, res) => {
         res.status(500).json({ "message": "Internal server error" });
     }
 })
-
 //Creates a new source in the database, hit after approval by the govt.
 router.post("/addSource", isAuthenticated, async (req, res) => {
     try {

@@ -13,6 +13,8 @@ import { isAuthenticated } from "../../middleware/authValidation.js";
 const stripe = Stripe(`sk_test_51MyvmbSGiNjG3rZcOfyOBofLOfZ2oyBYOv4hmuaJ0xmXZyFub3XLThUqtUDzdeECB1V95EG2tLtrAhhtOyToT05V0045wTunku`);
 const router = express.Router();
 
+//A total of 5 APIs here
+
 //Adds a new subscription to a particular source in the database.
 router.post("/addSubscription/:sourceId",isAuthenticated,async (req,res)=>{
     try {
