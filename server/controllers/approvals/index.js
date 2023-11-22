@@ -81,9 +81,9 @@ router.post("/addProposal", isAuthenticated, upload.fields([
 router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => {
     try {
 
-        if (req.payload.id != "644ba9a86b47fdea44b2380f") {
-            res.status(401).json({ "message": "Unauthorised" });
-        }
+        // if (req.payload.id != "644ba9a86b47fdea44b2380f") {
+        //     res.status(401).json({ "message": "Unauthorised" });
+        // }
 
         let foundProposal = await Proposal.findOne({ _id: req.params.proposalId });
 
@@ -177,9 +177,9 @@ router.post("/rejectApproval/:approvalId", isAuthenticated, async (req, res) => 
 //Only for the govt, to list all the proposals made by producers.
 router.get("/getAllApprovals", isAuthenticated, async (req, res) => {
     try {
-        if (req.payload.id != "644ba9a86b47fdea44b2380f") {
-            res.status(401).json({ "message": "Unauthorised" });
-        }
+        // if (req.payload.id != "644ba9a86b47fdea44b2380f") {
+        //     res.status(401).json({ "message": "Unauthorised" });
+        // }
 
         let x = await Proposal.find();
 

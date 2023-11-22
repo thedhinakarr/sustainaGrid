@@ -27,6 +27,7 @@ import PRejection from "./Components/Producer/PRejection";
 
 function App() {
   return (
+
       <Routes>
 
       <Route path="/" element={<LandingPage/>}/>
@@ -69,6 +70,7 @@ function App() {
 
       </Route>
       </Routes> 
+      
   );
 }
 

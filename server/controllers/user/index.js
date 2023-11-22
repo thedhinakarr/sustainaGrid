@@ -186,7 +186,6 @@ router.get("/getLocationString", isAuthenticated, async (req, res) => {
             res.status(200).json({ "locationString": foundUser.locationString })
         }
 
-        res.status(200).json({ "message": "getLocationString hit" });
     } catch (err) {
         res.status(500).json({ "message": "internal server error" })
     }
@@ -197,6 +196,7 @@ router.get("/getLatLong", isAuthenticated, async (req, res) => {
     try {
         console.log(req.payload)
         let foundUser = await User.findOne({ _id: req.payload.id });
+
         if (!foundUser) {
             res.status(404).json({ "message": "User not found" })
         }
@@ -204,7 +204,6 @@ router.get("/getLatLong", isAuthenticated, async (req, res) => {
             res.status(200).json({ "lat": foundUser.locationLat, "long": foundUser.locationLong })
         }
 
-        res.status(200).json({ "message": "getLocationString hit" });
     } catch (err) {
         console.log(err)
         res.status(500).json({ "message": "internal server error" })
