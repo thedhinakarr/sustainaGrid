@@ -63,6 +63,7 @@ export default function GovtDash() {
             <div className="flex flex-col mb-2 mr-2 p-8 border rounded-lg border-susYGreen">
                 <span onClick={(e)=>{e.preventDefault(); alert("Clicked approval profile"); navigate(`/approvalProfile/${ele._id}`) }} className='text-white cursor-pointer font-semibold'>Approval ID: <span className='hover:text-susZGreen'>{ele._id}</span></span>
                 <span className='text-white mb-4 font-semibold'>Approval By: <span className='hover:text-susZGreen focus:cursor-auto' >{ele.proposalBy[0]}</span></span>
+                <span className='text-white mb-4 font-semibold'>Status: <span className='hover:text-susZGreen focus:cursor-auto' >{ele.state}</span></span>
             </div>
 
         )

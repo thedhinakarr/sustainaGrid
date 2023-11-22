@@ -24,53 +24,55 @@ import AddSourcePage from "./Components/Govt/AddSourcePage";
 import DeleteSubPage from "./Components/Consumer/DeleteSub";
 import CRejection from "./Components/Consumer/CRejection";
 import PRejection from "./Components/Producer/PRejection";
+import RejectProfile from "./Components/Govt/RejectProfile";
 
 function App() {
   return (
 
-      <Routes>
+    <Routes>
 
-      <Route path="/" element={<LandingPage/>}/>
-      <Route path="/register" element={<Registration/>}/>
-      <Route path="/login" element={<Login/>}/>
-      <Route path="/govtLogin" element={<GovtLogin/>}/>
-      
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/register" element={<Registration />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/govtLogin" element={<GovtLogin />} />
 
-      <Route element={<PrivateRoute/>}>
 
-      <Route path="/producerDashBoard" element={<ProducerDash/>}/>
-      <Route path="/producerMarket" element={<ProducerMarket/>}/>
-      <Route path="/producerApprovals" element={<ProducerApprovals/>}/>
-      <Route path="/producerProposal" element={<ProducerProposal/>}/>
-      <Route path="/producerSourceProfile/:id" element={<ProducerSourceProfile/>}/>
-      <Route path="/producerCheckoutPage/:id" element={<ProducerCheckoutPage/>}/>
-      <Route path="/producerLocationAnalyser/:id" element={<ProducerLocationAnalyser/>} />
-      <Route path="/pRejection" element={<PRejection/>}/>
-      {/* Add rejection pages */}
+      <Route element={<PrivateRoute />}>
 
-      <Route path="/consumerDashBoard" element={<ConsumerDash/>}/>
-      <Route path="/groot" element={<AICHAT/>}/>
-      <Route path="/consumerMarket" element={<ConsumerMarket/>}/>
-      <Route path="/locationAnalyser/:id" element={<Home/>}/>
-      <Route path="/sourceProfile/:id" element={<SourceProfile/>}/>
-      <Route path="/checkoutPage/:id" element={<CheckoutPage/>}/>
-      <Route path="/deleteSub/:id" element={<DeleteSubPage/>}/>
-      <Route path="/cRejection" element={<CRejection/>}/>
-      {/* Add rejection pages */}
+        <Route path="/producerDashBoard" element={<ProducerDash />} />
+        <Route path="/producerMarket" element={<ProducerMarket />} />
+        <Route path="/producerApprovals" element={<ProducerApprovals />} />
+        <Route path="/producerProposal" element={<ProducerProposal />} />
+        <Route path="/producerSourceProfile/:id" element={<ProducerSourceProfile />} />
+        <Route path="/producerCheckoutPage/:id" element={<ProducerCheckoutPage />} />
+        <Route path="/producerLocationAnalyser/:id" element={<ProducerLocationAnalyser />} />
+        <Route path="/pRejection" element={<PRejection />} />
+        {/* Add rejection pages */}
 
-      <Route path="/govtDashBoard" element={<GovtDash/>}/>
-      <Route path="/approvalProfile/:id" element={<ApprovalProfile/>}/>
-      <Route path="/govtLocationAnalyzer/:id" element={<GovtLocationAnalyzer/>}/>
-      <Route path="/addSource/:id" element={<AddSourcePage/>}/>
-      {/* Add rejection pages */}
+        <Route path="/consumerDashBoard" element={<ConsumerDash />} />
+        <Route path="/groot" element={<AICHAT />} />
+        <Route path="/consumerMarket" element={<ConsumerMarket />} />
+        <Route path="/locationAnalyser/:id" element={<Home />} />
+        <Route path="/sourceProfile/:id" element={<SourceProfile />} />
+        <Route path="/checkoutPage/:id" element={<CheckoutPage />} />
+        <Route path="/deleteSub/:id" element={<DeleteSubPage />} />
+        <Route path="/cRejection" element={<CRejection />} />
+        {/* Add rejection pages */}
 
-      
-      {/* <Route path="/monitorUsers" element={<GovtMap/>}/> */}
-      {/* <Route path="/monitorSources" element={}/> */}
+        <Route path="/govtDashBoard" element={<GovtDash />} />
+        <Route path="/approvalProfile/:id" element={<ApprovalProfile />} />
+        <Route path="/govtLocationAnalyzer/:id" element={<GovtLocationAnalyzer />} />
+        <Route path="/addSource/:id" element={<AddSourcePage />} />
+        <Route path="/rejectSource/:id" element={<RejectProfile />}/>
+        {/* Add rejection pages */}
+
+
+        {/* <Route path="/monitorUsers" element={<GovtMap/>}/> */}
+        {/* <Route path="/monitorSources" element={}/> */}
 
       </Route>
-      </Routes> 
-      
+    </Routes>
+
   );
 }
 

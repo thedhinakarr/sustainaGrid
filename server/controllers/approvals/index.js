@@ -152,11 +152,12 @@ router.post("/acceptProposal/:proposalId", isAuthenticated, async (req, res) => 
 })
 
 //Only for the government, in order to reject a proposal, by using the proposal ID mentioned in the params
-router.post("/rejectApproval/:approvalId", isAuthenticated, async (req, res) => {
+router.post("/rejectApproval/:approvalId", async (req, res) => {
     try {
-        if (req.payload.id != "643fbf124d159f872deee32d") {
-            res.status(401).json({ "message": "Unauthorised" });
-        }
+
+        // if (req.payload.id != "643fbf124d159f872deee32d") {
+        //     res.status(401).json({ "message": "Unauthorised" });
+        // }
 
         let foundApproval = await Proposal.findOne({ _id: req.params.approvalId });
 
@@ -165,7 +166,9 @@ router.post("/rejectApproval/:approvalId", isAuthenticated, async (req, res) => 
             res.status(404).json({ "message": "Proposal not found" });
         }
 
-        await Approval.updateOne({ _id: req.params.approvalId }, { $set: { isApproved: false, state: "Rejected" } });
+        await foundApproval.updateOne({ $set: { state: "Rejected" } });
+
+
         res.status(200).json({ "message": "Proposal Rejected, the proposal does not comply to government norms" });
 
     } catch (error) {
