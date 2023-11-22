@@ -38,7 +38,7 @@ export default function ProducerProposal() {
     setxFile(e.target.files[0]);
   };
 
- async function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
 
     let token = localStorage.getItem("token");
@@ -64,20 +64,21 @@ export default function ProducerProposal() {
 
   }
 
- 
+
 
   return (
     <>
 
-      <section className="bg-black ">
-        <div className="flex flex-col items-center justify-center mx-auto h-screen w-screen lg:py-0">
-          <div className="w-full p-3 overflow-auto shadow dark:border md:mt-0 sm:max-w-md xl:p-0  dark:border-susZGreen">
+      <section className="border-white ">
+        <div className="flex border-susZGreen flex-col items-center justify-center mx-auto h-screen w-screen lg:py-0">
+          <div className="w-full p-3 overflow-auto shadow md:mt-0 sm:max-w-md xl:p-0  border-susZGreen">
             <div className="p-6 space-y-4 bg-black  md:space-y-6 sm:p-8">
 
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-white">
                 Make a proposal
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+
+              <form className=" border-white space-y-4 md:space-y-6" action="#">
                 <div>
                   <label className='text-white'>
                     Upload SourcePic <br />
@@ -189,7 +190,7 @@ export default function ProducerProposal() {
                     htmlFor="proposedSubscriptionPrice"
                     className="block mb-2 text-sm font-medium text-white"
                   >
-                   proposedSubscriptionPrice
+                    proposedSubscriptionPrice
                   </label>
                   <input
                     type="text"
@@ -223,7 +224,7 @@ export default function ProducerProposal() {
                     htmlFor="confirm-password"
                     className="block mb-2 text-sm font-medium text-white"
                   >
-                   locationString
+                    locationString
                   </label>
                   <input
                     type="text"
@@ -234,13 +235,13 @@ export default function ProducerProposal() {
                     required="true"
                   />
                 </div>
-          
+
                 <div>
                   <label
                     htmlFor="locationLat"
                     className="block mb-2 text-sm font-medium text-white"
                   >
-                   locationLat
+                    locationLat
                   </label>
                   <input
                     type="text"
@@ -256,7 +257,7 @@ export default function ProducerProposal() {
                     htmlFor="locationLong"
                     className="block mb-2 text-sm font-medium text-white"
                   >
-                   locationLong
+                    locationLong
                   </label>
                   <input
                     type="text"
