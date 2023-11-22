@@ -6,7 +6,6 @@ import { isAuthenticated } from "../../middleware/authValidation.js";
 const router = express.Router();
 //NEED to setup the configuration for openAI.
 
-
 //The route used for the AI CHAT BOT.
 //ONLY 1 API here.
 router.post("/chat", isAuthenticated, async (req, res) => {
