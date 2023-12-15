@@ -10,6 +10,9 @@ const router = express.Router();
 //ONLY 1 API here.
 router.post("/chat", isAuthenticated, async (req, res) => {
   try {
+    
+    //Print to test what's coming in.
+    
     console.log(req.body);
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
